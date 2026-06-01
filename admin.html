@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RewardVerse Admin Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans p-6">
+
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-8 border-b border-gray-800 pb-5">
+            <div>
+                <h1 class="text-3xl font-black text-white tracking-tight">RewardVerse Console</h1>
+                <p class="text-sm text-gray-400 mt-1">Global admin systems control and audit dashboard</p>
+            </div>
+            <button onclick="fetchAdminStats()" class="bg-yellow-500 hover:bg-yellow-400 text-gray-950 font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1.5 transition-colors">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i> Reload Records
+            </button>
+        </div>
+
+        <!-- Analytical Statistics Overview Display Cards -->
+        <div class="grid grid-cols-4 gap-6 mb-8">
+            <div class="bg-gray-900 border border-gray-800 p-5 rounded-2xl">
+                <span class="text-xs text-gray-400 font-bold uppercase tracking-wider">Total Network Players</span>
+                <h2 id="stat-users" class="text-2xl font-black text-white mt-1">0</h2>
+            </div>
+            <div class="bg-gray-900 border border-gray-800 p-5 rounded-2xl">
+                <span class="text-xs text-gray-400 font-bold uppercase tracking-wider">Active Circulating Supply</span>
+                <h2 id="stat-coins" class="text-2xl font-black text-white mt-1">0</h2>
+            </div>
+            <div class="bg-gray-900 border border-gray-800 p-5 rounded-2xl">
+                <span class="text-xs text-gray-400 font-bold uppercase tracking-wider">Pending Cashouts</span>
+                <h2 id="stat-pending" class="text-2xl font-black text-yellow-500 mt-1">0</h2>
+            </div>
+            <div class="bg-gray-900 border border-gray-800 p-5 rounded-2xl">
+                <span class="text-xs text-gray-400 font-bold uppercase tracking-wider">Generated Referrals</span>
+                <h2 id="stat-referrals" class="text-2xl font-black text-white mt-1">0</h2>
+            </div>
+        </div>
+
+        <!-- Interactive Tables: Pending Payout Requests -->
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-lg">
+            <div class="px-6 py-4 border-b border-gray-800 flex justify-between items-center">
+                <h3 class="font-bold text-sm text-white">Pending Withdrawals Ledger</h3>
+                <span class="text-xs text-gray-400">Action validations settle parameters in real-time</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-950 text-xs text-gray-400 font-bold border-b border-gray-800">
+                            <th class="p-4">Telegram User</th>
+                            <th class="p-4">Exchange Amount</th>
+                            <th class="p-4">Target Method</th>
+                            <th class="p-4">Payout Destination Address</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="wd-table-body" class="divide-y divide-gray-800/60 text-sm">
+                        <tr>
+                            <td colspan="5" class="p-8 text-center text-gray-400">Loading data logs...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Administrative logic routines executing parameters against system configurations -->
+    <script>
+        const API_HOST = "https://your-production-backend.railway.internal"; // Must sync alignment value with server host
+
+        async function fetchAdminStats() {
+            const headers = {
+                "Content-Type": "application/json",
+                "x-telegram-init-data": window.Telegram?.WebApp?.initData || ""
+            };
+
+            try {
+                const response = await fetch(`${API_HOST}/api/admin/dashboard`, { headers });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || "Execution fault");
+
+                document.getElementById("stat-users").innerText = data.overview.total_users;
+                document.getElementById("stat-coins").innerText = parseFloat(data.overview.circulating_coins).toLocaleString();
+                document.getElementById("stat-pending").innerText = data.overview.pending_withdrawals;
+                document.getElementById("stat-referrals").innerText = data.overview.total_referrals;
+
+                const tbody = document.getElementById("wd-table-body");
+                if (data.withdrawals.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-gray-400">No pending withdrawal instances identified</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.withdrawals.map(wd => `
+                    <tr class="hover:bg-gray-950/40 transition-colors">
+                        <td class="p-4">
+                            <div class="font-semibold text-white">${wd.first_name}</div>
+                            <div class="text-xs text-gray-400 font-mono">ID: ${wd.telegram_id}</div>
+                        </td>
+                        <td class="p-4">
+                            <div class="font-bold text-yellow-500">${parseFloat(wd.amount_coins).toLocaleString()} Coins</div>
+                            <div class="text-xs text-gray-400">৳ ${wd.conversion_bdt} BDT</div>
+                        </td>
+                        <td class="p-4 font-semibold text-gray-300">${wd.method}</td>
+                        <td class="p-4 font-mono text-xs text-gray-300">${wd.wallet_address}</td>
+                        <td class="p-4 text-right">
+                            <div class="flex justify-end gap-2">
+                                <button onclick="processWithdrawal('${wd.id}', 'Approved')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-colors">Approve</button>
+                                <button onclick="processWithdrawal('${wd.id}', 'Rejected')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-colors">Reject</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join("");
+
+                lucide.createIcons();
+            } catch (err) {
+                alert("Stats Load Failed: " + err.message);
+            }
+        }
+
+        async function processWithdrawal(withdrawalId, status) {
+            const notes = prompt(`Enter administrative note details for: ${status}`);
+            if (notes === null) return;
+
+            const headers = {
+                "Content-Type": "application/json",
+                "x-telegram-init-data": window.Telegram?.WebApp?.initData || ""
+            };
+
+            try {
+                const response = await fetch(`${API_HOST}/api/admin/withdrawal/update`, {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify({ withdrawalId, status, notes })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error);
+
+                alert("Withdrawal state successfully finalized");
+                fetchAdminStats();
+            } catch (err) {
+                alert("Status Update Fault: " + err.message);
+            }
+        }
+
+        // Initialize display content on boot
+        window.onload = fetchAdminStats;
+    </script>
+</body>
+</html>
