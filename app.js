@@ -2,7 +2,7 @@
  * RewardVerse SPA Front-End Core Client Logic [v3.0]
  */
 
-const BACKEND_BASE = "https://your-production-backend.railway.internal"; // Update this with your live deployment URL
+const BACKEND_BASE = "https://rewardverse-backend-s059.onrender.com"; // Update this with your live deployment URL
 const DEFAULT_ADS_BLOCK_ID = "8392"; // Configured inside AdsGram dashboard interface
 
 // Local state representation cache
