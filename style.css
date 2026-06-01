@@ -1,0 +1,98 @@
+/* Glassmorphic Cards Style Variables & Telegram Theme Integrations */
+:root {
+    --tg-bg-color: #030712;
+    --tg-theme-secondary-bg: #111827;
+    --tg-accent-color: #eab308;
+}
+
+/* Intercept Custom Scrollbar styling */
+::-webkit-scrollbar {
+    width: 4px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(234, 179, 8, 0.2);
+    border-radius: 99px;
+}
+
+body {
+    background-color: var(--tg-bg-color);
+    -webkit-tap-highlight-color: transparent;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Glassmorphism Elements Overlay Class */
+.glass-panel {
+    background: rgba(17, 24, 39, 0.7);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+}
+
+/* Dynamic Active Bottom Navigation Highlight States */
+.nav-btn.active {
+    color: var(--tg-accent-color) !important;
+    transform: scale(1.08);
+}
+.nav-btn {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.15s ease;
+}
+
+/* 60 FPS Accelerated Keyframe Animations */
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 15px rgba(234, 179, 8, 0.15);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(234, 179, 8, 0.35);
+    }
+}
+
+.glow-card {
+    animation: pulseGlow 3s infinite ease-in-out;
+}
+
+/* Canvas Spin Wheel Styling Rules */
+.spin-container {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin: 0 auto;
+}
+
+.spin-pointer {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 25px solid var(--tg-accent-color);
+    z-index: 10;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+}
+
+/* Matching Puzzle Card Transitions */
+.card-flip {
+    perspective: 1000px;
+}
+.card-inner {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+}
+.card-flipped .card-inner {
+    transform: rotateY(180deg);
+}
+.card-front, .card-back {
+    backface-visibility: hidden;
+    position: absolute;
+    inset: 0;
+}
+.card-back {
+    transform: rotateY(180deg);
+}
