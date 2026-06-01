@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>RewardVerse</title>
+    <!-- Tailwind CSS Integration CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icon Pack Imports -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Official Telegram WebApp SDK Integration -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Official AdsGram SDK Integration -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans select-none overflow-x-hidden">
+
+    <!-- Global Screen Loader Wrapper -->
+    <div id="app-loader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-950">
+        <div class="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-4 text-yellow-500 font-semibold tracking-wide animate-pulse">Initializing RewardVerse...</p>
+    </div>
+
+    <!-- Active Global Notifications Toast Layer -->
+    <div id="toast-container" class="fixed top-4 left-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Master Shell Container -->
+    <main id="app-container" class="pb-24 pt-4 max-w-md mx-auto px-4 min-h-screen flex flex-col">
+        <!-- SPA Viewport Render Frame Target -->
+        <div id="view-content" class="flex-grow transition-opacity duration-300"></div>
+    </main>
+
+    <!-- Navigation Bar Target Menu -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-md border-t border-gray-800/80 max-w-md mx-auto z-40">
+        <div class="flex justify-around items-center py-3">
+            <a href="#/home" class="nav-btn flex flex-col items-center gap-1 text-gray-400 hover:text-yellow-500 transition-colors" data-tab="home">
+                <i data-lucide="home" class="w-6 h-6"></i>
+                <span class="text-xs">Home</span>
+            </a>
+            <a href="#/missions" class="nav-btn flex flex-col items-center gap-1 text-gray-400 hover:text-yellow-500 transition-colors" data-tab="missions">
+                <i data-lucide="award" class="w-6 h-6"></i>
+                <span class="text-xs">Missions</span>
+            </a>
+            <a href="#/games" class="nav-btn flex flex-col items-center gap-1 text-gray-400 hover:text-yellow-500 transition-colors" data-tab="games">
+                <i data-lucide="gamepad-2" class="w-6 h-6"></i>
+                <span class="text-xs">Games</span>
+            </a>
+            <a href="#/referral" class="nav-btn flex flex-col items-center gap-1 text-gray-400 hover:text-yellow-500 transition-colors" data-tab="referral">
+                <i data-lucide="users" class="w-6 h-6"></i>
+                <span class="text-xs">Friends</span>
+            </a>
+            <a href="#/wallet" class="nav-btn flex flex-col items-center gap-1 text-gray-400 hover:text-yellow-500 transition-colors" data-tab="wallet">
+                <i data-lucide="wallet" class="w-6 h-6"></i>
+                <span class="text-xs">Wallet</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Root Application Handler Execution -->
+    <script src="app.js"></script>
+</body>
+</html>
